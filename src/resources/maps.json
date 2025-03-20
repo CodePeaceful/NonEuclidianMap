@@ -1,0 +1,47 @@
+{
+    "maps": [
+        {
+            "name": "M1",
+            "north": "",
+            "east": "M2",
+            "south": "",
+            "west": "",
+            "texture": {
+                "x": 0,
+                "y": 0
+            },
+            "walls": [
+                {
+                    "x": 0,
+                    "y": 0,
+                    "width": 0,
+                    "height": 0
+                }
+            ]
+        },
+        {
+            "name": "M2",
+            "north": "",
+            "east": "",
+            "south": "",
+            "west": "M1",
+            "texture": {
+                "x": 800,
+                "y": 0
+            },
+            "walls": [
+                {
+                    "x": 0,
+                    "y": 0,
+                    "width": 0,
+                    "height": 0
+                }
+            ]
+        }
+    ],
+    "startMap": "M1",
+    "startPos": {
+        "x": 400.0,
+        "y": 400.0
+    }
+}
