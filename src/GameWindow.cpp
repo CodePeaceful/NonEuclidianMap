@@ -46,8 +46,14 @@ void GameWindow::draw() {
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
             player.moveRight();
         }
-        if (const std::optional newMap = currentMap->colide(player)) {
-            changeMap(*newMap);
+        auto result = currentMap->colide(player);
+        if (result.getType() == ColisionResult::EXIT) {
+            changeMap(result.getTarget());
+        }
+        else if (result.getType() == ColisionResult::TELEPORT) {
+            Map* map = &namedMaps[result.getTarget()];
+            map->arrive(currentMap->getExitDirection());
+            currentMap = map;
         }
         window.clear();
         currentMap->draw(window);

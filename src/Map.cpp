@@ -8,7 +8,7 @@ sf::Texture Map::dummy = sf::Texture();
 sf::Font Map::font = sf::Font("/usr/share/fonts/truetype/ubuntu/UbuntuMono[wght].ttf");
 
 // chat gpt said
-sf::FloatRect Map::rotateAroundCenter(const sf::FloatRect& rect) const {
+sf::FloatRect Map::rotateAroundCenter(sf::FloatRect rect, Rotation upDirection) {
     float x = rect.position.x, y = rect.position.y, w = rect.size.x, h = rect.size.y;
     float px = 400, py = 400;
 
@@ -42,9 +42,44 @@ Map::Map(nlohmann::json& data, sf::Texture& texture) : sprite{texture}, textName
     for (auto& j : data["walls"]) {
         walls.emplace_back(sf::Vector2f{j.at("x"), j.at("y")}, sf::Vector2f{j.at("width"), j.at("height")});
     }
+    if (data.contains("teleport")) {
+        for (auto& j : data["teleport"]) {
+            teleporters.push_back(Teleport(j));
+        }
+    }
 }
 
-std::optional<std::string> Map::colide(Player& player) {
+ColisionResult Map::colide(Player& player) {
+    for (const auto& t : teleporters) {
+        auto pPos = player.getPosition();
+        Rotation direction = upDirection;
+        if (direction == Rotation::EAST) {
+            direction = Rotation::WEST;
+        }
+        else if (direction == Rotation::WEST) {
+            direction = Rotation::EAST;
+        }
+        pPos = rotateAroundCenter(pPos, direction);
+        if (t.touch(pPos)) {
+            auto pos = t.getTargetPosition();
+            pos.x += pPos.size.x / 2;
+            pos.y += pPos.size.y / 2;
+            switch (t.getEffect()) {
+            case Teleport::NONE:
+                screenExitDirection = Rotation::NORTH;
+                break;
+            case Teleport::KEEP_ROTATION:
+                screenExitDirection = upDirection;
+                pos = rotateAroundCenter({pos, {0, 0}}, direction).position;
+                break;
+            default:
+                // TODO: handle unimplemented
+                break;
+            }
+            player.setPosition(pos);
+            return ColisionResult(t.getTargetName(), ColisionResult::TELEPORT);
+        }
+    }
     auto playerPos = player.getPosition();
     std::optional<int> extraRot;
     if (playerPos.position.x < 0) {
@@ -78,17 +113,17 @@ std::optional<std::string> Map::colide(Player& player) {
     if (extraRot) {
         switch ((4 - (int)upDirection + *extraRot) % 4) {
         case 0:
-            return north;
+            return ColisionResult(north, ColisionResult::EXIT);
         case 1:
-            return east;
+            return ColisionResult(east, ColisionResult::EXIT);
         case 2:
-            return south;
+            return ColisionResult(south, ColisionResult::EXIT);
         case 3:
-            return west;
+            return ColisionResult(west, ColisionResult::EXIT);
         }
     }
     for (auto w : walls) {
-        auto rotated = rotateAroundCenter(w);
+        auto rotated = rotateAroundCenter(w, upDirection);
 
         if (const std::optional i = rotated.findIntersection(playerPos)) {
             switch (player.getFacing()) {
@@ -123,7 +158,7 @@ std::optional<std::string> Map::colide(Player& player) {
             player.setPosition(playerPos.position);
         }
     }
-    return std::nullopt;
+    return ColisionResult();
 }
 
 const std::string& Map::getName() const {
@@ -166,4 +201,9 @@ void Map::draw(sf::RenderWindow& window) const {
 
 Rotation Map::getExitDirection() const {
     return screenExitDirection;
+}
+
+void Map::arrive(Rotation myUp) {
+    upDirection = myUp;
+    sprite.rotate(sf::degrees(int(myUp) * 90));
 }

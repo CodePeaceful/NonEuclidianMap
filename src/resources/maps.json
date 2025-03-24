@@ -2,9 +2,9 @@
     "maps": [
         {
             "name": "M1",
-            "north": "",
+            "north": "M4",
             "east": "M2",
-            "south": "",
+            "south": "M3",
             "west": "",
             "texture": {
                 "x": 0,
@@ -14,16 +14,30 @@
                 {
                     "x": 0,
                     "y": 0,
-                    "width": 0,
-                    "height": 0
+                    "width": 50,
+                    "height": 800
+                }
+            ],
+            "teleport": [
+                {
+                    "target": {
+                        "map": "M2",
+                        "x": 300,
+                        "y": 123
+                    },
+                    "origin": {
+                        "x": 150,
+                        "y": 150
+                    },
+                    "effect": "none"
                 }
             ]
         },
         {
             "name": "M2",
             "north": "",
-            "east": "",
-            "south": "",
+            "east": "M4",
+            "south": "M3",
             "west": "M1",
             "texture": {
                 "x": 800,
@@ -33,8 +47,46 @@
                 {
                     "x": 0,
                     "y": 0,
-                    "width": 0,
-                    "height": 0
+                    "width": 800,
+                    "height": 50
+                }
+            ]
+        },
+        {
+            "name": "M3",
+            "north": "M2",
+            "east": "",
+            "south": "M4",
+            "west": "M1",
+            "texture": {
+                "x": 800,
+                "y": 800
+            },
+            "walls": [
+                {
+                    "x": 750,
+                    "y": 0,
+                    "width": 50,
+                    "height": 800
+                }
+            ]
+        },
+        {
+            "name": "M4",
+            "north": "M1",
+            "east": "",
+            "south": "M2",
+            "west": "M3",
+            "texture": {
+                "x": 0,
+                "y": 800
+            },
+            "walls": [
+                {
+                    "x": 750,
+                    "y": 0,
+                    "width": 50,
+                    "height": 800
                 }
             ]
         }
