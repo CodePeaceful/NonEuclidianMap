@@ -21,7 +21,8 @@ add_executable(MagicMap
     src/main.cpp
     src/GameWindow.cpp
     src/Player.cpp
-    src/Map.cpp)
+    src/Map.cpp
+    src/Teleport.cpp)
 target_compile_features(MagicMap PRIVATE cxx_std_23)
 
 target_link_libraries(MagicMap PRIVATE 
