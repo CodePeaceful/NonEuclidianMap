@@ -70,7 +70,7 @@ ColisionResult Map::colide(Player& player) {
                 break;
             case Teleport::KEEP_ROTATION:
                 screenExitDirection = upDirection;
-                pos = rotateAroundCenter({pos, {0, 0}}, direction).position;
+                pos = rotateAroundCenter({pos, {0, 0}}, upDirection).position;
                 break;
             default:
                 // TODO: handle unimplemented

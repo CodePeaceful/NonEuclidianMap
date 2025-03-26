@@ -1,10 +1,11 @@
 #include "Teleport.hpp"
 
 Teleport::Teleport(nlohmann::json& json) {
-    if (json["effect"] == "none") {
+    std::string effectStr = json["effect"];
+    if (effectStr == "none") {
         effect = NONE;
     }
-    else if (json["effrct"] == "keepRotation") {
+    else if (effectStr == "keepRotation") {
         effect = KEEP_ROTATION;
     }
     else {
